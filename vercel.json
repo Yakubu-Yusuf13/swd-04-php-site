@@ -4,13 +4,8 @@
       "runtime": "vercel-php@0.9.0"
     }
   },
-  "rewrites": [
-    { "source": "/", "destination": "/api/index.php?page=index" },
-    { "source": "/index.php", "destination": "/api/index.php?page=index" },
-    { "source": "/about.php", "destination": "/api/index.php?page=about" },
-    { "source": "/services.php", "destination": "/api/index.php?page=services" },
-    { "source": "/service.php", "destination": "/api/index.php?page=service" },
-    { "source": "/contact.php", "destination": "/api/index.php?page=contact" },
-    { "source": "/messages.php", "destination": "/api/index.php?page=messages" }
+  "routes": [
+    { "src": "^/$", "dest": "/api/index.php?page=index" },
+    { "src": "^/(.*)\\.php$", "dest": "/api/index.php?page=$1" }
   ]
 }
