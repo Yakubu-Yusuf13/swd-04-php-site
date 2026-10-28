@@ -1,24 +1,27 @@
 <?php
 declare(strict_types=1);
 
-session_start();
+$isVercelDeployment = getenv('VERCEL') === '1';
+if (!$isVercelDeployment) {
+    session_start();
+}
 
 $pageTitle = 'Contact';
 require_once __DIR__ . '/includes/config.php';
 require_once __DIR__ . '/includes/functions.php';
 require_once __DIR__ . '/includes/data.php';
 
-if (!isset($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token'])) {
+if (!$isVercelDeployment && (!isset($_SESSION['csrf_token']) || !is_string($_SESSION['csrf_token']))) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
 
-$csrfToken = $_SESSION['csrf_token'];
+$csrfToken = $isVercelDeployment ? '' : $_SESSION['csrf_token'];
 $fields = ['name', 'email', 'phone', 'service', 'message'];
 $values = array_fill_keys($fields, '');
 $errors = [];
 $formError = '';
 
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && !$isVercelDeployment) {
     foreach ($fields as $field) {
         $postedValue = $_POST[$field] ?? '';
 
@@ -134,6 +137,12 @@ require_once __DIR__ . '/includes/header.php';
                 <div class="form-error-summary" role="alert"><?= e($errors['csrf']) ?></div>
             <?php endif; ?>
 
+            <?php if ($isVercelDeployment): ?>
+                <div class="form-success" role="status">
+                    The contact form is unavailable in this demo deployment. Please email
+                    <a href="mailto:<?= e($contactEmail) ?>"><?= e($contactEmail) ?></a> instead.
+                </div>
+            <?php else: ?>
             <form class="contact-form" method="post" action="contact.php">
                 <input type="hidden" name="csrf_token" value="<?= e($csrfToken) ?>">
 
@@ -182,6 +191,7 @@ require_once __DIR__ . '/includes/header.php';
 
                 <button class="button button-primary" type="submit">Send your message</button>
             </form>
+            <?php endif; ?>
 
             <p class="contact-direct">Prefer email? <a href="mailto:<?= e($contactEmail) ?>"><?= e($contactEmail) ?></a></p>
         </div>

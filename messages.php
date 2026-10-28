@@ -1,6 +1,11 @@
 <?php
 declare(strict_types=1);
 
+if (getenv('VERCEL') === '1') {
+    http_response_code(404);
+    exit;
+}
+
 session_start();
 header('Cache-Control: no-store, private');
 

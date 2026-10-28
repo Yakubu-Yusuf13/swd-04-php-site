@@ -45,7 +45,17 @@ A responsive, multi-page website for a fictional cleaning business, built as a h
 
 The contact form creates `storage/messages.jsonl` on the first successful submission. The file is ignored by Git and the storage folder includes an Apache rule that denies direct web access.
 
-> **Learning-only security note:** The message viewer password is hard-coded in a PHP source file. This is not production-grade authentication: source code can be copied, committed, exposed in backups, or disclosed in a source leak, and this example has no user accounts, password hashing, rate limiting, or robust access-control system. Do not deploy the sample password or this viewer on a public server. Production applications should use securely configured credentials, hashed passwords, HTTPS, and a proper authentication and authorization system.
+> **Learning-only security note:** The message viewer password is hard-coded in a PHP source file. This is not production-grade authentication: source code can be copied, committed, exposed in backups, or disclosed in a source leak, and this example has no user accounts, password hashing, rate limiting, or robust access-control system. Do not expose it on a public server. Production applications should use securely configured credentials, hashed passwords, HTTPS, and a proper authentication and authorization system.
+
+## Deploy a read-only demo with Vercel
+
+This project includes a Vercel configuration using the community-maintained `vercel-php` runtime; PHP is not an official Vercel runtime. Review the runtime and its limits before deploying.
+
+1. Import `Yakubu-Yusuf13/swd-04-php-site` in the Vercel dashboard.
+2. Keep the project root as the repository root and use the default framework/build settings.
+3. Deploy. The runtime configured in `vercel.json` handles the PHP pages.
+
+The Vercel deployment is intentionally a demo: the contact form is replaced with an email link because Vercel function filesystems and sessions are not durable storage; `messages.php` returns 404 there. Contact submissions are not saved. Continue using XAMPP for the file-backed form and local inbox, or add a database and production-grade authentication before enabling those features on a hosted site.
 
 ## Project structure
 
@@ -59,6 +69,9 @@ The contact form creates `storage/messages.jsonl` on the first successful submis
 ├── services.php
 ├── README.md
 ├── .gitignore
+├── vercel.json
+├── api/
+│   └── index.php
 ├── assets/
 │   └── css/
 │       └── style.css
